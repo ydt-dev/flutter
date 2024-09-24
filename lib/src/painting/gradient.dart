@@ -5,8 +5,7 @@
 import 'dart:collection';
 import 'dart:math' as math;
 import 'dart:typed_data';
-import 'package:flutter/ui/ui.dart' as ui
-    show Gradient, lerpDouble, MockGradientLinear, MockGradientRadial;
+import 'package:flutter/ui/ui.dart' as ui show Gradient, lerpDouble;
 
 import 'package:flutter/foundation.dart';
 import 'package:vector_math/vector_math_64.dart';
@@ -414,7 +413,7 @@ class LinearGradient extends Gradient {
 
   @override
   Shader createShader(Rect rect, {TextDirection? textDirection}) {
-    final shader = ui.Gradient.linear(
+    return ui.Gradient.linear(
       begin.resolve(textDirection).withinRect(rect),
       end.resolve(textDirection).withinRect(rect),
       colors,
@@ -422,10 +421,6 @@ class LinearGradient extends Gradient {
       tileMode,
       _resolveTransform(rect, textDirection),
     );
-    if (shader is ui.MockGradientLinear) {
-      shader.originGradient = this;
-    }
-    return shader;
   }
 
   /// Returns a new [LinearGradient] with its colors scaled by the given factor.
@@ -674,7 +669,7 @@ class RadialGradient extends Gradient {
 
   @override
   Shader createShader(Rect rect, {TextDirection? textDirection}) {
-    final shader = ui.Gradient.radial(
+    return ui.Gradient.radial(
       center.resolve(textDirection).withinRect(rect),
       radius * rect.shortestSide,
       colors,
@@ -684,10 +679,6 @@ class RadialGradient extends Gradient {
       focal == null ? null : focal!.resolve(textDirection).withinRect(rect),
       focalRadius * rect.shortestSide,
     );
-    if (shader is ui.MockGradientRadial) {
-      shader.originGradient = this;
-    }
-    return shader;
   }
 
   /// Returns a new [RadialGradient] with its colors scaled by the given factor.

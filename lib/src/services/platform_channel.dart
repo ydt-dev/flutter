@@ -176,7 +176,6 @@ class MethodChannel {
           print('No implementation found for method $method on channel $name');
         } else {
           print(e);
-          rethrow;
         }
       }
     }

@@ -4471,15 +4471,7 @@ class NavigatorState extends State<Navigator>
   ///  * [restorablePush], which pushes a route that can be restored during
   ///    state restoration.
   @optionalTypeArgs
-  Future<T?> push<T extends Object?>(Route<T> route) async {
-    final _RouteEntry entry =
-        _history.lastWhere(_RouteEntry.isPresentPredicate);
-    if (_previousPopDate != null &&
-        DateTime.now().millisecondsSinceEpoch -
-                _previousPopDate!.millisecondsSinceEpoch <
-            50) {
-      await Future.delayed(Duration(milliseconds: 50));
-    }
+  Future<T?> push<T extends Object?>(Route<T> route) {
     _pushEntry(_RouteEntry(route, initialState: _RouteLifecycle.push));
     return route.popped;
   }
@@ -5056,8 +5048,6 @@ class NavigatorState extends State<Navigator>
     }
   }
 
-  DateTime? _previousPopDate;
-
   /// Pop the top-most route off the navigator.
   ///
   /// {@macro flutter.widgets.navigator.pop}
@@ -5108,7 +5098,6 @@ class NavigatorState extends State<Navigator>
       return true;
     }());
     _afterNavigation(entry.route);
-    _previousPopDate = DateTime.now();
   }
 
   /// Calls [pop] repeatedly until the predicate returns true.

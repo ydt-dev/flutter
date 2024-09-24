@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import 'package:flutter/material.dart';
 import 'package:flutter/ui/ui.dart' as ui
     show Image, ImageFilter, TextHeightBehavior;
 
@@ -3668,8 +3667,6 @@ class Stack extends MultiChildRenderObjectWidget {
 ///  * [Stack], for more details about stacks.
 ///  * The [catalog of layout widgets](https://flutter.dev/widgets/layout/).
 class IndexedStack extends Stack {
-  final bool keepAlive;
-
   /// Creates a [Stack] widget that paints a single child.
   ///
   /// The [index] argument must not be null.
@@ -3679,29 +3676,36 @@ class IndexedStack extends Stack {
     TextDirection? textDirection,
     StackFit sizing = StackFit.loose,
     this.index = 0,
-    this.keepAlive = false,
     List<Widget> children = const <Widget>[],
   }) : super(
             key: key,
             alignment: alignment,
             textDirection: textDirection,
             fit: sizing,
-            children: keepAlive
-                ? children.map((e) {
-                    return Positioned.fill(
-                      child: IgnorePointer(
-                        ignoring: index != children.indexOf(e),
-                        child: Opacity(
-                          opacity: index == children.indexOf(e) ? 1.0 : 0.0,
-                          child: e,
-                        ),
-                      ),
-                    );
-                  }).toList()
-                : (children.isEmpty ? [] : [children[index ?? 0]]));
+            children: children);
 
   /// The index of the child to show.
   final int? index;
+
+  @override
+  RenderIndexedStack createRenderObject(BuildContext context) {
+    assert(_debugCheckHasDirectionality(context));
+    return RenderIndexedStack(
+      index: index,
+      alignment: alignment,
+      textDirection: textDirection ?? Directionality.maybeOf(context),
+    );
+  }
+
+  @override
+  void updateRenderObject(
+      BuildContext context, RenderIndexedStack renderObject) {
+    assert(_debugCheckHasDirectionality(context));
+    renderObject
+      ..index = index
+      ..alignment = alignment
+      ..textDirection = textDirection ?? Directionality.maybeOf(context);
+  }
 }
 
 /// A widget that controls where a child of a [Stack] is positioned.
